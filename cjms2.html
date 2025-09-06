@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFinds - Sustainable Second-Hand Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
+    <div id="app" class="min-h-screen">
+        <!-- Login/Signup Screen -->
+        <div id="auth-screen" class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md fade-in">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">EcoFinds</h1>
+                    <p class="text-gray-600">Sustainable Second-Hand Marketplace</p>
+                </div>
+
+                <div id="login-form">
+                    <h2 class="text-xl font-semibold mb-6 text-center">Welcome Back</h2>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="login-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" id="login-password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            Sign In
+                        </button>
+                    </form>
+                    <p class="text-center mt-6 text-gray-600">
+                        Don't have an account? 
+                        <button onclick="showSignup()" class="text-green-600 font-medium hover:text-green-700">Sign Up</button>
+                    </p>
+                </div>
+
+                <div id="signup-form" class="hidden">
+                    <h2 class="text-xl font-semibold mb-6 text-center">Create Account</h2>
+                    <form onsubmit="handleSignup(event)">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                            <input type="text" id="signup-username" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Choose a username">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="signup-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" id="signup-password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Create a password">
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            Create Account
+                        </button>
+                    </form>
+                    <p class="text-center mt-6 text-gray-600">
+                        Already have an account? 
+                        <button onclick="showLogin()" class="text-green-600 font-medium hover:text-green-700">Sign In</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-app" class="hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                    </svg>
+                                </div>
+                                <h1 class="text-xl font-bold text-gray-900">EcoFinds</h1>
+                            </div>
+                        </div>
+                        <nav class="hidden md:flex space-x-8">
+                            <button onclick="showScreen('browse')" class="nav-btn text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium">Browse</button>
+                            <button onclick="showScreen('my-listings')" class="nav-btn text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium">My Listings</button>
+                            <button onclick="showScreen('cart')" class="nav-btn text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium relative">
+                                Cart
+                                <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                            </button>
+                            <button onclick="showScreen('purchases')" class="nav-btn text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium">Purchases</button>
+                            <button onclick="showScreen('profile')" class="nav-btn text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium">Profile</button>
+                        </nav>
+                        <button onclick="logout()" class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Mobile Navigation -->
+            <div class="md:hidden bg-white border-t border-gray-200 fixed bottom-0 left-0 right-0 z-50">
+                <div class="flex justify-around py-2">
+                    <button onclick="showScreen('browse')" class="mobile-nav-btn flex flex-col items-center py-2 px-3">
+                        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <span class="text-xs">Browse</span>
+                    </button>
+                    <button onclick="showScreen('my-listings')" class="mobile-nav-btn flex flex-col items-center py-2 px-3">
+                        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <span class="text-xs">Listings</span>
+                    </button>
+                    <button onclick="showScreen('cart')" class="mobile-nav-btn flex flex-col items-center py-2 px-3 relative">
+                        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                        </svg>
+                        <span class="text-xs">Cart</span>
+                        <span id="mobile-cart-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                    </button>
+                    <button onclick="showScreen('profile')" class="mobile-nav-btn flex flex-col items-center py-2 px-3">
+                        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-xs">Profile</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Browse Screen -->
+            <div id="browse-screen" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <div class="flex-1">
+                            <input type="text" id="search-input" placeholder="Search products..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" onkeyup="filterProducts()">
+                        </div>
+                        <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" onchange="filterProducts()">
+                            <option value="">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Books">Books</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Toys">Toys</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Products will be populated here -->
+                </div>
+
+                <div id="no-products" class="hidden text-center py-12">
+                    <div class="text-gray-400 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                    <p class="text-gray-600">Try adjusting your search or filter criteria</p>
+                </div>
+            </div>
+
+            <!-- My Listings Screen -->
+            <div id="my-listings-screen" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">My Listings</h2>
+                    <button onclick="showScreen('add-product')" class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Product
+                    </button>
+                </div>
+
+                <div id="my-listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- User's listings will be populated here -->
+                </div>
+
+                <div id="no-listings" class="text-center py-12">
+                    <div class="text-gray-400 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No listings yet</h3>
+                    <p class="text-gray-600 mb-4">Start selling by adding your first product</p>
+                    <button onclick="showScreen('add-product')" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                        Add Your First Product
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add Product Screen -->
+            <div id="add-product-screen" class="hidden max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showScreen('my-listings')" class="mr-4 p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h2 class="text-2xl font-bold text-gray-900">Add New Product</h2>
+                    </div>
+
+                    <form onsubmit="handleAddProduct(event)">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Title</label>
+                            <input type="text" id="product-title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter product title">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <select id="product-category" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option value="">Select a category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Home & Garden">Home & Garden</option>
+                                <option value="Books">Books</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Toys">Toys</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="product-description" required rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Describe your product..."></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                            <input type="number" id="product-price" required min="0" step="0.01" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="0.00">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+                                <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-600 mb-2">Image Placeholder</p>
+                                <p class="text-sm text-gray-500">Click to add image (Demo)</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            Submit Listing
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Edit Product Screen -->
+            <div id="edit-product-screen" class="hidden max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showScreen('my-listings')" class="mr-4 p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h2 class="text-2xl font-bold text-gray-900">Edit Product</h2>
+                    </div>
+
+                    <form onsubmit="handleEditProduct(event)">
+                        <input type="hidden" id="edit-product-id">
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Title</label>
+                            <input type="text" id="edit-product-title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <select id="edit-product-category" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option value="">Select a category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Home & Garden">Home & Garden</option>
+                                <option value="Books">Books</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Toys">Toys</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="edit-product-description" required rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                            <input type="number" id="edit-product-price" required min="0" step="0.01" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                                Update Listing
+                            </button>
+                            <button type="button" onclick="showScreen('my-listings')" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-400 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Product Detail Screen -->
+            <div id="product-detail-screen" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <button onclick="showScreen('browse')" class="mb-6 p-2 hover:bg-gray-100 rounded-lg inline-flex items-center text-gray-600">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Back to Browse
+                        </button>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <div id="product-detail-image" class="bg-gray-100 rounded-lg h-80 flex items-center justify-center mb-4">
+                                    <svg class="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="mb-4">
+                                    <span id="product-detail-category" class="inline-block bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full mb-2"></span>
+                                    <h1 id="product-detail-title" class="text-3xl font-bold text-gray-900 mb-2"></h1>
+                                    <p id="product-detail-price" class="text-2xl font-bold text-green-600 mb-4"></p>
+                                </div>
+
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+                                    <p id="product-detail-description" class="text-gray-700 leading-relaxed"></p>
+                                </div>
+
+                                <div class="mb-6">
+                                    <p class="text-sm text-gray-500">Sold by: <span id="product-detail-seller" class="font-medium"></span></p>
+                                </div>
+
+                                <button id="add-to-cart-btn" onclick="addToCart()" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Screen -->
+            <div id="cart-screen" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Shopping Cart</h2>
+
+                <div id="cart-items" class="space-y-4 mb-6">
+                    <!-- Cart items will be populated here -->
+                </div>
+
+                <div id="empty-cart" class="text-center py-12">
+                    <div class="text-gray-400 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
+                    <p class="text-gray-600 mb-4">Start shopping to add items to your cart</p>
+                    <button onclick="showScreen('browse')" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                        Start Shopping
+                    </button>
+                </div>
+
+                <div id="cart-summary" class="hidden bg-gray-50 rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold">Total:</span>
+                        <span id="cart-total" class="text-2xl font-bold text-green-600">$0.00</span>
+                    </div>
+                    <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Purchases Screen -->
+            <div id="purchases-screen" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Purchase History</h2>
+
+                <div id="purchases-list" class="space-y-4">
+                    <!-- Purchase history will be populated here -->
+                </div>
+
+                <div id="no-purchases" class="text-center py-12">
+                    <div class="text-gray-400 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No purchases yet</h3>
+                    <p class="text-gray-600 mb-4">Your purchase history will appear here</p>
+                    <button onclick="showScreen('browse')" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                        Start Shopping
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Screen -->
+            <div id="profile-screen" class="hidden max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+
+                    <form onsubmit="handleProfileUpdate(event)">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                            <input type="text" id="profile-username" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="profile-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            Update Profile
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let products = [];
+        let cart = [];
+        let purchases = [];
+        let currentScreen = 'browse';
+        let currentProductId = null;
+
+        // Initialize app
+        function initApp() {
+            // Load sample data
+            loadSampleData();
+            
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('ecofinds_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } else {
+                showAuthScreen();
+            }
+        }
+
+        function loadSampleData() {
+            // Load from localStorage or create sample data
+            const savedProducts = localStorage.getItem('ecofinds_products');
+            const savedCart = localStorage.getItem('ecofinds_cart');
+            const savedPurchases = localStorage.getItem('ecofinds_purchases');
+
+            if (savedProducts) {
+                products = JSON.parse(savedProducts);
+            } else {
+                products = [
+                    {
+                        id: 1,
+                        title: "Vintage Leather Jacket",
+                        description: "Classic brown leather jacket in excellent condition. Perfect for fall and winter.",
+                        category: "Clothing",
+                        price: 89.99,
+                        seller: "fashionista_jane",
+                        sellerId: "demo_user"
+                    },
+                    {
+                        id: 2,
+                        title: "iPhone 12 Pro",
+                        description: "Unlocked iPhone 12 Pro in great condition. Includes original charger and case.",
+                        category: "Electronics",
+                        price: 599.99,
+                        seller: "tech_guru",
+                        sellerId: "demo_user2"
+                    },
+                    {
+                        id: 3,
+                        title: "Yoga Mat Set",
+                        description: "Complete yoga set with mat, blocks, and strap. Barely used.",
+                        category: "Sports",
+                        price: 45.00,
+                        seller: "wellness_warrior",
+                        sellerId: "demo_user3"
+                    }
+                ];
+                localStorage.setItem('ecofinds_products', JSON.stringify(products));
+            }
+
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+
+            if (savedPurchases) {
+                purchases = JSON.parse(savedPurchases);
+            }
+        }
+
+        // Authentication functions
+        function showLogin() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simple demo authentication
+            currentUser = {
+                id: 'user_' + Date.now(),
+                email: email,
+                username: email.split('@')[0]
+            };
+
+            localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+            showMainApp();
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            currentUser = {
+                id: 'user_' + Date.now(),
+                email: email,
+                username: username
+            };
+
+            localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+            showMainApp();
+        }
+
+        function logout() {
+            currentUser = null;
+            cart = [];
+            localStorage.removeItem('ecofinds_user');
+            localStorage.removeItem('ecofinds_cart');
+            showAuthScreen();
+        }
+
+        function showAuthScreen() {
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            showScreen('browse');
+            updateCartBadge();
+            updateProfile();
+        }
+
+        // Screen navigation
+        function showScreen(screenName) {
+            // Hide all screens
+            const screens = ['browse-screen', 'my-listings-screen', 'add-product-screen', 'edit-product-screen', 'product-detail-screen', 'cart-screen', 'purchases-screen', 'profile-screen'];
+            screens.forEach(screen => {
+                document.getElementById(screen).classList.add('hidden');
+            });
+
+            // Show selected screen
+            document.getElementById(screenName + '-screen').classList.remove('hidden');
+            currentScreen = screenName;
+
+            // Update navigation
+            updateNavigation();
+
+            // Load screen-specific data
+            switch(screenName) {
+                case 'browse':
+                    loadProducts();
+                    break;
+                case 'my-listings':
+                    loadMyListings();
+                    break;
+                case 'cart':
+                    loadCart();
+                    break;
+                case 'purchases':
+                    loadPurchases();
+                    break;
+            }
+        }
+
+        function updateNavigation() {
+            // Update desktop nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-green-600', 'border-b-2', 'border-green-600');
+                btn.classList.add('text-gray-700');
+            });
+
+            // Update mobile nav
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                btn.classList.remove('text-green-600');
+                btn.classList.add('text-gray-500');
+            });
+
+            // Highlight current screen
+            const currentBtn = document.querySelector(`[onclick="showScreen('${currentScreen}')"]`);
+            if (currentBtn) {
+                if (currentBtn.classList.contains('nav-btn')) {
+                    currentBtn.classList.remove('text-gray-700');
+                    currentBtn.classList.add('text-green-600');
+                } else if (currentBtn.classList.contains('mobile-nav-btn')) {
+                    currentBtn.classList.remove('text-gray-500');
+                    currentBtn.classList.add('text-green-600');
+                }
+            }
+        }
+
+        // Product functions
+        function loadProducts() {
+            const grid = document.getElementById('products-grid');
+            const noProducts = document.getElementById('no-products');
+            
+            if (products.length === 0) {
+                grid.innerHTML = '';
+                noProducts.classList.remove('hidden');
+                return;
+            }
+
+            noProducts.classList.add('hidden');
+            grid.innerHTML = products.map(product => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow slide-up">
+                    <div class="bg-gray-100 h-48 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-2">
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">${product.category}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">${product.title}</h3>
+                        <p class="text-green-600 font-bold text-lg mb-3">$${product.price.toFixed(2)}</p>
+                        <button onclick="showProductDetail(${product.id})" class="w-full bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+
+            let filteredProducts = products;
+
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.title.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (categoryFilter) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.category === categoryFilter
+                );
+            }
+
+            const grid = document.getElementById('products-grid');
+            const noProducts = document.getElementById('no-products');
+            
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = '';
+                noProducts.classList.remove('hidden');
+                return;
+            }
+
+            noProducts.classList.add('hidden');
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow slide-up">
+                    <div class="bg-gray-100 h-48 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-2">
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">${product.category}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">${product.title}</h3>
+                        <p class="text-green-600 font-bold text-lg mb-3">$${product.price.toFixed(2)}</p>
+                        <button onclick="showProductDetail(${product.id})" class="w-full bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentProductId = productId;
+
+            document.getElementById('product-detail-title').textContent = product.title;
+            document.getElementById('product-detail-category').textContent = product.category;
+            document.getElementById('product-detail-price').textContent = `$${product.price.toFixed(2)}`;
+            document.getElementById('product-detail-description').textContent = product.description;
+            document.getElementById('product-detail-seller').textContent = product.seller;
+
+            // Hide add to cart button if it's user's own product
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            if (product.sellerId === currentUser.id) {
+                addToCartBtn.style.display = 'none';
+            } else {
+                addToCartBtn.style.display = 'flex';
+            }
+
+            showScreen('product-detail');
+        }
+
+        function loadMyListings() {
+            const userProducts = products.filter(p => p.sellerId === currentUser.id);
+            const grid = document.getElementById('my-listings-grid');
+            const noListings = document.getElementById('no-listings');
+
+            if (userProducts.length === 0) {
+                grid.innerHTML = '';
+                noListings.classList.remove('hidden');
+                return;
+            }
+
+            noListings.classList.add('hidden');
+            grid.innerHTML = userProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden slide-up">
+                    <div class="bg-gray-100 h-48 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-2">
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">${product.category}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">${product.title}</h3>
+                        <p class="text-green-600 font-bold text-lg mb-3">$${product.price.toFixed(2)}</p>
+                        <div class="flex gap-2">
+                            <button onclick="editProduct(${product.id})" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                Edit
+                            </button>
+                            <button onclick="deleteProduct(${product.id})" class="flex-1 bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleAddProduct(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('product-title').value;
+            const category = document.getElementById('product-category').value;
+            const description = document.getElementById('product-description').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+
+            const newProduct = {
+                id: Date.now(),
+                title,
+                category,
+                description,
+                price,
+                seller: currentUser.username,
+                sellerId: currentUser.id
+            };
+
+            products.push(newProduct);
+            localStorage.setItem('ecofinds_products', JSON.stringify(products));
+
+            // Reset form
+            event.target.reset();
+            
+            // Show success message and redirect
+            alert('Product added successfully!');
+            showScreen('my-listings');
+        }
+
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            document.getElementById('edit-product-id').value = productId;
+            document.getElementById('edit-product-title').value = product.title;
+            document.getElementById('edit-product-category').value = product.category;
+            document.getElementById('edit-product-description').value = product.description;
+            document.getElementById('edit-product-price').value = product.price;
+
+            showScreen('edit-product');
+        }
+
+        function handleEditProduct(event) {
+            event.preventDefault();
+            
+            const productId = parseInt(document.getElementById('edit-product-id').value);
+            const title = document.getElementById('edit-product-title').value;
+            const category = document.getElementById('edit-product-category').value;
+            const description = document.getElementById('edit-product-description').value;
+            const price = parseFloat(document.getElementById('edit-product-price').value);
+
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                products[productIndex] = {
+                    ...products[productIndex],
+                    title,
+                    category,
+                    description,
+                    price
+                };
+
+                localStorage.setItem('ecofinds_products', JSON.stringify(products));
+                alert('Product updated successfully!');
+                showScreen('my-listings');
+            }
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products = products.filter(p => p.id !== productId);
+                localStorage.setItem('ecofinds_products', JSON.stringify(products));
+                loadMyListings();
+            }
+        }
+
+        // Cart functions
+        function addToCart() {
+            const product = products.find(p => p.id === currentProductId);
+            if (!product) return;
+
+            // Check if already in cart
+            const existingItem = cart.find(item => item.id === product.id);
+            if (existingItem) {
+                alert('This item is already in your cart!');
+                return;
+            }
+
+            cart.push(product);
+            localStorage.setItem('ecofinds_cart', JSON.stringify(cart));
+            updateCartBadge();
+            alert('Added to cart!');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('ecofinds_cart', JSON.stringify(cart));
+            updateCartBadge();
+            loadCart();
+        }
+
+        function loadCart() {
+            const cartItems = document.getElementById('cart-items');
+            const emptyCart = document.getElementById('empty-cart');
+            const cartSummary = document.getElementById('cart-summary');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.classList.remove('hidden');
+                cartSummary.classList.add('hidden');
+                return;
+            }
+
+            emptyCart.classList.add('hidden');
+            cartSummary.classList.remove('hidden');
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+
+            cartItems.innerHTML = cart.map(item => `
+                <div class="bg-white rounded-lg shadow-md p-4 flex items-center gap-4">
+                    <div class="bg-gray-100 w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-900">${item.title}</h3>
+                        <p class="text-sm text-gray-600">${item.category}</p>
+                        <p class="text-green-600 font-bold">$${item.price.toFixed(2)}</p>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-red-600 hover:text-red-700 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateCartBadge() {
+            const badges = [document.getElementById('cart-badge'), document.getElementById('mobile-cart-badge')];
+            badges.forEach(badge => {
+                if (cart.length > 0) {
+                    badge.textContent = cart.length;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const purchaseDate = new Date().toLocaleDateString();
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            const purchase = {
+                id: Date.now(),
+                date: purchaseDate,
+                items: [...cart],
+                total: total
+            };
+
+            purchases.push(purchase);
+            localStorage.setItem('ecofinds_purchases', JSON.stringify(purchases));
+
+            cart = [];
+            localStorage.setItem('ecofinds_cart', JSON.stringify(cart));
+            updateCartBadge();
+
+            alert('Purchase completed successfully!');
+            showScreen('purchases');
+        }
+
+        function loadPurchases() {
+            const purchasesList = document.getElementById('purchases-list');
+            const noPurchases = document.getElementById('no-purchases');
+
+            if (purchases.length === 0) {
+                purchasesList.innerHTML = '';
+                noPurchases.classList.remove('hidden');
+                return;
+            }
+
+            noPurchases.classList.add('hidden');
+            purchasesList.innerHTML = purchases.map(purchase => `
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Order #${purchase.id}</h3>
+                            <p class="text-sm text-gray-600">Purchased on ${purchase.date}</p>
+                        </div>
+                        <p class="text-lg font-bold text-green-600">$${purchase.total.toFixed(2)}</p>
+                    </div>
+                    <div class="space-y-2">
+                        ${purchase.items.map(item => `
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <div>
+                                    <p class="font-medium text-gray-900">${item.title}</p>
+                                    <p class="text-sm text-gray-600">${item.category}</p>
+                                </div>
+                                <p class="font-medium text-gray-900">$${item.price.toFixed(2)}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateProfile() {
+            if (currentUser) {
+                document.getElementById('profile-username').value = currentUser.username;
+                document.getElementById('profile-email').value = currentUser.email;
+            }
+        }
+
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('profile-username').value;
+            const email = document.getElementById('profile-email').value;
+
+            currentUser.username = username;
+            currentUser.email = email;
+
+            localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+            alert('Profile updated successfully!');
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97acd71132cf7f8b',t:'MTc1NzE0OTg5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
