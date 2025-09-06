@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EcoFinds - Sustainable Second-Hand Marketplace</title>
+<style>
+  /* Basic Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background: #f0f7f4;
+    color: #333;
+  }
+  header {
+    background: #2e7d32;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  main {
+    max-width: 900px;
+    margin: 1rem auto;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  button {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0.3rem 0;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #27632a;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.3rem 0 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  label {
+    font-weight: bold;
+  }
+  .hidden {
+    display: none;
+  }
+  nav {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  nav button {
+    flex: 1 1 auto;
+  }
+  .product-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .product-image {
+    width: 80px;
+    height: 80px;
+    background: #ccc;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  .product-info {
+    flex-grow: 1;
+  }
+  .product-actions button {
+    margin-left: 0.3rem;
+  }
+  @media (max-width: 600px) {
+    nav {
+      flex-direction: column;
+    }
+    .product-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .product-image {
+      width: 100%;
+      height: 150px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>EcoFinds</header>
+
+<main>
+
+<!-- Login / Register -->
+<section id="auth-section">
+  <h2>Login or Register</h2>
+  <div id="auth-forms">
+    <div id="login-form">
+      <h3>Login</h3>
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" required />
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" required />
+      <button id="login-btn">Login</button>
+      <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
+    </div>
+    <div id="register-form" class="hidden">
+      <h3>Register</h3>
+      <label for="register-username">Username</label>
+      <input type="text" id="register-username" required />
+      <label for="register-email">Email</label>
+      <input type="email" id="register-email" required />
+      <label for="register-password">Password</label>
+      <input type="password" id="register-password" required />
+      <button id="register-btn">Register</button>
+      <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- Main App -->
+<section id="app-section" class="hidden">
+
+  <nav>
+    <button id="nav-feed">Product Feed</button>
+    <button id="nav-add">Add Product</button>
+    <button id="nav-mylistings">My Listings</button>
+    <button id="nav-profile">Profile</button>
+    <button id="nav-cart">Cart</button>
+    <button id="nav-purchases">Previous Purchases</button>
+    <button id="logout-btn" style="background:#b71c1c;">Logout</button>
+  </nav>
+
+  <!-- Product Feed -->
+  <section id="feed-section">
+    <h2>Product Feed</h2>
+    <input type="text" id="search-input" placeholder="Search by title..." />
+    <select id="category-filter">
+      <option value="">All Categories</option>
+      <option>Electronics</option>
+      <option>Clothing</option>
+      <option>Books</option>
+      <option>Home</option>
+      <option>Other</option>
+    </select>
+    <div id="product-list"></div>
+  </section>
+
+  <!-- Add Product -->
+  <section id="add-section" class="hidden">
+    <h2>Add New Product</h2>
+    <form id="add-product-form">
+      <label for="product-title">Product Title</label>
+      <input type="text" id="product-title" required />
+      <label for="product-category">Category</label>
+      <select id="product-category" required>
+        <option value="" disabled selected>Select category</option>
+        <option>Electronics</option>
+        <option>Clothing</option>
+        <option>Books</option>
+        <option>Home</option>
+        <option>Other</option>
+      </select>
+      <label for="product-description">Description</label>
+      <textarea id="product-description" rows="4" required></textarea>
+      <label for="product-price">Price ($)</label>
+      <input type="number" id="product-price" min="0" step="0.01" required />
+      <button type="submit">Submit Listing</button>
+    </form>
+  </section>
+
+  <!-- My Listings -->
+  <section id="mylistings-section" class="hidden">
+    <h2>My Listings</h2>
+    <div id="my-product-list"></div>
+  </section>
+
+  <!-- Profile -->
+  <section id="profile-section" class="hidden">
+    <h2>Profile</h2>
+    <form id="profile-form">
+      <label for="profile-username">Username</label>
+      <input type="text" id="profile-username" required />
+      <label for="profile-email">Email (read-only)</label>
+      <input type="email" id="profile-email" readonly />
+      <button type="submit">Update Profile</button>
+    </form>
+  </section>
+
+  <!-- Cart -->
+  <section id="cart-section" class="hidden">
+    <h2>Cart</h2>
+    <div id="cart-list"></div>
+    <button id="checkout-btn" style="background:#388e3c;">Checkout</button>
+  </section>
+
+  <!-- Previous Purchases -->
+  <section id="purchases-section" class="hidden">
+    <h2>Previous Purchases</h2>
+    <div id="purchases-list"></div>
+  </section>
+
+  <!-- Product Detail Modal -->
+  <div id="product-detail-modal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;">
+    <div style="background:white;padding:1rem;max-width:400px;width:90%;border-radius:8px;position:relative;">
+      <button id="close-detail" style="position:absolute;top:8px;right:8px;background:#b71c1c;color:white;border:none;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;">X</button>
+      <div id="detail-image" style="width:100%;height:150px;background:#ccc;display:flex;justify-content:center;align-items:center;color:#666;margin-bottom:1rem;">[Image]</div>
+      <h3 id="detail-title"></h3>
+      <p><strong>Price:</strong> $<span id="detail-price"></span></p>
+      <p><strong>Category:</strong> <span id="detail-category"></span></p>
+      <p id="detail-description"></p>
+      <button id="add-to-cart-btn" style="background:#2e7d32;">Add to Cart</button>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  // Data keys for localStorage
+  const USERS_KEY = 'ecofinds_users';
+  const PRODUCTS_KEY = 'ecofinds_products';
+  const CART_KEY = 'ecofinds_cart';
+  const PURCHASES_KEY = 'ecofinds_purchases';
+  const LOGGED_IN_KEY = 'ecofinds_loggedin';
+
+  // Cached DOM elements
+  const authSection = document.getElementById('auth-section');
+  const appSection = document.getElementById('app-section');
+
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const showRegisterLink = document.getElementById('show-register');
+  const showLoginLink = document.getElementById('show-login');
+
+  const loginBtn = document.getElementById('login-btn');
+  const registerBtn = document.getElementById('register-btn');
+
+  const navFeedBtn = document.getElementById('nav-feed');
+  const navAddBtn = document.getElementById('nav-add');
+  const navMyListingsBtn = document.getElementById('nav-mylistings');
+  const navProfileBtn = document.getElementById('nav-profile');
+  const navCartBtn = document.getElementById('nav-cart');
+  const navPurchasesBtn = document.getElementById('nav-purchases');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  const feedSection = document.getElementById('feed-section');
+  const addSection = document.getElementById('add-section');
+  const myListingsSection = document.getElementById('mylistings-section');
+  const profileSection = document.getElementById('profile-section');
+  const cartSection = document.getElementById('cart-section');
+  const purchasesSection = document.getElementById('purchases-section');
+
+  const productListDiv = document.getElementById('product-list');
+  const myProductListDiv = document.getElementById('my-product-list');
+  const cartListDiv = document.getElementById('cart-list');
+  const purchasesListDiv = document.getElementById('purchases-list');
+
+  const searchInput = document.getElementById('search-input');
+  const categoryFilter = document.getElementById('category-filter');
+
+  const addProductForm = document.getElementById('add-product-form');
+
+  const profileForm = document.getElementById('profile-form');
+  const profileUsernameInput = document.getElementById('profile-username');
+  const profileEmailInput = document.getElementById('profile-email');
+
+  const productDetailModal = document.getElementById('product-detail-modal');
+  const closeDetailBtn = document.getElementById('close-detail');
+  const detailTitle = document.getElementById('detail-title');
+  const detailPrice = document.getElementById('detail-price');
+  const detailCategory = document.getElementById('detail-category');
+  const detailDescription = document.getElementById('detail-description');
+  const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  // State variables
+  let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  let products = JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || [];
+  let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  let purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
+  let loggedInUser  = JSON.parse(localStorage.getItem(LOGGED_IN_KEY)) || null;
+
+  let currentDetailProductId = null;
+
+  // Utility functions
+  function saveUsers() {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+  function saveProducts() {
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+  }
+  function saveCart() {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+  function savePurchases() {
+    localStorage.setItem(PURCHASES_KEY, JSON.stringify(purchases));
+  }
+  function saveLoggedInUser () {
+    localStorage.setItem(LOGGED_IN_KEY, JSON.stringify(loggedInUser ));
+  }
+
+  function showSection(section) {
+    // Hide all main app sections
+    [feedSection, addSection, myListingsSection, profileSection, cartSection, purchasesSection].forEach(s => s.classList.add('hidden'));
+    section.classList.remove('hidden');
+  }
+
+  function showApp() {
+    authSection.classList.add('hidden');
+    appSection.classList.remove('hidden');
+    showSection(feedSection);
+    renderProductFeed();
+    renderMyListings();
+    renderProfile();
+    renderCart();
+    renderPurchases();
+  }
+
+  function showAuth() {
+    authSection.classList.remove('hidden');
+    appSection.classList.add('hidden');
+  }
+
+  // Auth handlers
+  showRegisterLink.addEventListener('click', e => {
+    e.preventDefault();
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+  });
+  showLoginLink.addEventListener('click', e => {
+    e.preventDefault();
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+  });
+
+  registerBtn.addEventListener('click', () => {
+    const username = document.getElementById('register-username').value.trim();
+    const email = document.getElementById('register-email').value.trim().toLowerCase();
+    const password = document.getElementById('register-password').value;
+
+    if (!username || !email || !password) {
+      alert('Please fill all fields.');
+      return;
+    }
+    if (users.find(u => u.email === email)) {
+      alert('Email already registered.');
+      return;
+    }
+    users.push({ id: Date.now(), username, email, password });
+    saveUsers();
+    alert('Registration successful! Please login.');
+    registerForm.reset();
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+  });
+
+  loginBtn.addEventListener('click', () => {
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value;
+    const user = users.find(u => u.email === email && u.password === password);
+    if (!user) {
+      alert('Invalid email or password.');
+      return;
+    }
+    loggedInUser  = user;
+    saveLoggedInUser ();
+    loginForm.reset();
+    showApp();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    loggedInUser  = null;
+    saveLoggedInUser ();
+    showAuth();
+  });
+
+  // Navigation buttons
+  navFeedBtn.addEventListener('click', () => {
+    showSection(feedSection);
+    renderProductFeed();
+  });
+  navAddBtn.addEventListener('click', () => {
+    showSection(addSection);
+    addProductForm.reset();
+  });
+  navMyListingsBtn.addEventListener('click', () => {
+    showSection(myListingsSection);
+    renderMyListings();
+  });
+  navProfileBtn.addEventListener('click', () => {
+    showSection(profileSection);
+    renderProfile();
+  });
+  navCartBtn.addEventListener('click', () => {
+    showSection(cartSection);
+    renderCart();
+  });
+  navPurchasesBtn.addEventListener('click', () => {
+    showSection(purchasesSection);
+    renderPurchases();
+  });
+
+  // Add product
+  addProductForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('product-title').value.trim();
+    const category = document.getElementById('product-category').value;
+    const description = document.getElementById('product-description').value.trim();
+    const price = parseFloat(document.getElementById('product-price').value);
+
+    if (!title || !category || !description || isNaN(price) || price < 0) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+
+    products.push({
+      id: Date.now(),
+      ownerId: loggedInUser .id,
+      title,
+      category,
+      description,
+      price,
+      imagePlaceholder: '[Image]'
+    });
+    saveProducts();
+    alert('Product added!');
+    addProductForm.reset();
+    showSection(feedSection);
+    renderProductFeed();
+  });
+
+  // Render product feed
+  function renderProductFeed() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const category = categoryFilter.value;
+
+    let filtered = products.filter(p => {
+      const matchesSearch = p.title.toLowerCase().includes(searchTerm);
+      const matchesCategory = category === '' || p.category === category;
+      return matchesSearch && matchesCategory;
+    });
+
+    productListDiv.innerHTML = '';
+    if (filtered.length === 0) {
+      productListDiv.innerHTML = '<p>No products found.</p>';
+      return;
+    }
+    filtered.forEach(p => {
+      const card = createProductCard(p, false);
+      productListDiv.appendChild(card);
+    });
+  }
+
+  search
